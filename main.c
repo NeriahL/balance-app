@@ -3,7 +3,6 @@
 #include <string.h>
 #include <time.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "helper_functions.h"
 
 void Insert(Customer **head, Customer *customer)
@@ -433,7 +432,7 @@ Customer *generate_node(Customer **head, char *buf, char *command, FILE *ptr, ch
 
 int main(int argc, char *argv[])
 {
-	if (argc > 2 || argc < 1)
+	if (argc > 2 || argc <= 1)
 	{
 		printf("Error: Please maintain format <file> <database>");
 		return 1;
