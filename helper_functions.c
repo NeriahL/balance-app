@@ -135,3 +135,18 @@ int validate_id(Customer *customer, Customer *compare)
 	}
 	return 0;
 }
+
+void p_cust(Customer *cust)
+{
+	/*Prints All Fields In Customer*/
+
+    printf("%s %s %s %s %d/%d/%d %d\n",
+        cust->first_name, 
+        cust->last_name,
+        cust->id,
+        cust->phone_number,
+        cust->date.month,
+        cust->date.day,
+        cust->date.year,
+        cust->debt);
+}
