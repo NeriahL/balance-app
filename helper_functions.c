@@ -150,3 +150,32 @@ void p_cust(Customer *cust)
         cust->date.year,
         cust->debt);
 }
+
+char *clean(char *str)
+{
+	/*Function Clears Away Whitespace
+	
+	str: char*. */
+	if (str == NULL)
+	{
+		return NULL;
+	}
+	
+	while (*str == ' ') //moves beginning of string to after the leading whitespace
+	{
+		str++;
+	}
+
+	int i = strlen(str)-1;
+	char new_arr[100];
+
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\0') //marks 'i' as end of new string and decreses its value until beginning of trailing whitespace
+	{
+		i--;
+	}
+	strncpy(new_arr, str, i+1); //copies clean string to newly allocated memory.
+	new_arr[i+1] = '\0';
+	str = new_arr; //points pointer at new string.
+
+	return str;
+}
