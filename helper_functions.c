@@ -54,9 +54,28 @@ Customer *compare_first_name(Customer *c1, Customer *c2)
 		c2: Customer.
 		
 		return: the Customer with the greater valued first name.*/
+	int i = 0;
+
+	char c1_first[strlen(c1->first_name)];
+	strcpy(c1_first, c1->first_name);
+	char c2_first[strlen(c2->first_name)];
+	strcpy(c2_first, c2->first_name);
+
+	while (c1_first[i] != '\0')
+	{
+		c1_first[i] = tolower(c1_first[i]);
+		i++;
+	}
+	
+	i = 0;
+	while (c2_first[i] != '\0')
+	{
+		c2_first[i] = tolower(c2_first[i]);
+		i++;
+	}
     Customer *r_cust;
 
-    if (strcmp(c1->first_name, c2->first_name) > 0)
+    if (strcmp(c1_first, c2_first) > 0)
         r_cust = c1;
     else 
         r_cust = c2;
@@ -71,9 +90,29 @@ Customer *compare_last_name(Customer *c1, Customer *c2)
 		c2: Customer.
 		
 		return: the Customer with the greater valued last name.*/
-    Customer *r_cust;
 
-    if (strcmp(c1->last_name, c2->last_name) > 0)
+	char c1_last[strlen(c1->last_name)];
+	strcpy(c1_last, c1->last_name);
+	char c2_last[strlen(c2->last_name)];
+	strcpy(c2_last, c2->last_name);
+
+	int i = 0;
+	while (c1_last[i] != '\0')
+	{
+		c1_last[i] = tolower(c1_last[i]);
+		i++;
+	}
+	
+	i = 0;
+	while (c2_last[i] != '\0')
+	{
+		c2_last[i] = tolower(c2_last[i]);
+		i++;
+	}
+    
+	Customer *r_cust;
+
+    if (strcmp(c1_last, c2_last) > 0)
         r_cust = c1;
     else 
         r_cust = c2;

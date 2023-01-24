@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdio.h>
+#include <ctype.h>
 #include "helper_functions.h"
 
 void Insert(Customer **head, Customer *customer)
@@ -273,7 +275,7 @@ void Run_Attributes(Customer *head, char *command, char *param, char *val, char 
 	}
 }
 
-void write_to_database(FILE *ptr, Customer *customer)
+void write_to_database(FILE *ptr, Customer *customer, char *database)
 {
 	/*Writes to Database
 	
@@ -300,7 +302,7 @@ void write_to_database(FILE *ptr, Customer *customer)
 	fopen("database.csv", "r");
 }
 
-Customer *generate_node(Customer **head, char *buf, char *command, FILE *ptr)
+Customer *generate_node(Customer **head, char *buf, char *command, FILE *ptr, char *database)
 {
 	/*Function Generates Node for search or additon.
 	
@@ -390,7 +392,7 @@ Customer *generate_node(Customer **head, char *buf, char *command, FILE *ptr)
 			param = strtok(NULL, op);
 			str = strtok(NULL, ",");
 		}
-		write_to_database(ptr, customer); //write to Database
+		write_to_database(ptr, customer, database); //write to Database
 	}
 	// execute option of command is 'select'. Parses, cleans str, and populates Customer.
 	else if(strcmp(command, "select") == 0)
@@ -429,9 +431,17 @@ Customer *generate_node(Customer **head, char *buf, char *command, FILE *ptr)
 	return customer;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	FILE *ptr = fopen("database.csv", "r");
+	if (argc > 2 || argc < 1)
+	{
+		printf("Error: Please maintain format <file> <database>");
+		return 1;
+	}
+
+	char *database = argv[1];
+	
+	FILE *ptr = fopen(database, "r");
 	Customer *head = NULL;
 	Customer *curr = NULL;
 	char *command;
@@ -444,7 +454,7 @@ int main()
 	//Prints customers in database.
 	while (fgets(buf, 265, ptr)) 
 	{
-		curr = generate_node(&head, buf, NULL, ptr);
+		curr = generate_node(&head, buf, NULL, ptr, database);
 	}
 	Print(head, NULL, "*", compare_id);
 	
@@ -458,7 +468,7 @@ int main()
 
 		if (strcmp(command, "set") == 0 || strcmp(command, "select") == 0)
 		{
-			curr = generate_node(&head, val, command, ptr);
+			curr = generate_node(&head, val, command, ptr, database);
 		}
 		else if (strcmp(command, "print\n") == 0)
 		{
