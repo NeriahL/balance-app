@@ -114,3 +114,24 @@ Customer *compare_phone_number(Customer *c1, Customer *c2)
     return r_cust;
 }
 
+int validate_id(Customer *customer, Customer *compare)
+{
+	/*Function validates if ID is already present in the system
+	
+	customer: Customer.
+	compare: Customer.
+	
+	return: Function returns 1 if first and last names are not equal between two Customers.
+	
+	used to validate ID*/
+	if (compare != NULL)
+	{
+		if(strcmp(compare->first_name, customer->first_name) != 0 ||
+		   strcmp(compare->last_name, customer->last_name) != 0)
+		{
+			printf("Error: Name of customer does not match name paired to ID in system.\nPlease enter correct name and/or ID number\n");
+			return 1;
+		}
+	}
+	return 0;
+}
