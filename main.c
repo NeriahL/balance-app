@@ -439,6 +439,8 @@ int main(int argc, char *argv[])
 	}
 
 	char *database = argv[1];
+
+	puts("This is an app for managing customer debt.\n\nThe program starts by printing a list of the customers and their current balance.\nThere are four legitimate commands:\n\nset. - This command adds a new entry to the database and alters the customer list and their balances accordingly. \n\tProper format => set first name=<name> , last name=<name> , id=<id> , phone number=<number> , date=<date<month/day/year>> , debt=<debt>\n\nselect. - This command searches the list, by any parameter. Note, it searches the list of customers in the program, not the list of entries in the database. \n\n\tProper format => select <parameter<first name/last name...>><operator<'='/'<'/'>'/'!='><value<name/date/debt...>\n\nprint. - This command prints the list of customers and their current balance.\n\nquit. - This command quits the program\n\n");
 	
 	FILE *ptr = fopen(database, "r");
 	Customer *head = NULL;
