@@ -17,3 +17,6 @@ There are four legitimate commands:
 3. print. - This command prints the list of customers and their current balance.
 
 4. quit. - This command quits the program.
+
+
+This app is compiled with a Makefile using the command 'make', and is run by typing in './local'.
