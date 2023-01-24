@@ -1,0 +1,6 @@
+local
+main
+new
+testing
+*.o
+testing.c
