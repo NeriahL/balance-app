@@ -14,13 +14,9 @@ Customer *compare_date(Customer *c1, Customer *c2)
     int c2_date = (c2->date.year *372) + (c2->date.month * 31) + c2->date.day;
 
     if (c1_date > c2_date)
-    {
         ptr = c1;
-    }
     else
-    {
         ptr = c2;
-    }
 
     return ptr;
 }
@@ -35,9 +31,7 @@ Customer *compare_debt(Customer *c1, Customer *c2)
     Customer *r_cust;
 
     if (!c1 || !c2)
-    {
         return NULL;
-    }
     
     if (c1->debt < c2->debt)
         r_cust = c1;
@@ -175,43 +169,23 @@ int validate_id(Customer *customer, Customer *compare)
 	return 0;
 }
 
-void p_cust(Customer *cust)
-{
-	/*Prints All Fields In Customer*/
-
-    printf("%s %s %s %s %d/%d/%d %d\n",
-        cust->first_name, 
-        cust->last_name,
-        cust->id,
-        cust->phone_number,
-        cust->date.month,
-        cust->date.day,
-        cust->date.year,
-        cust->debt);
-}
-
 char *clean(char *str)
 {
 	/*Function Clears Away Whitespace
 	
 	str: char*. */
 	if (str == NULL)
-	{
 		return NULL;
-	}
 	
 	while (*str == ' ') //moves beginning of string to after the leading whitespace
-	{
 		str++;
-	}
 
 	int i = strlen(str)-1;
 	char new_arr[100];
 
 	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\0') //marks 'i' as end of new string and decreses its value until beginning of trailing whitespace
-	{
 		i--;
-	}
+	
 	strncpy(new_arr, str, i+1); //copies clean string to newly allocated memory.
 	new_arr[i+1] = '\0';
 	str = new_arr; //points pointer at new string.

@@ -16,8 +16,8 @@ typedef struct Date
 
 typedef struct Customer
 {
-	char first_name[11];
-	char last_name[11];
+	char first_name[12];
+	char last_name[12];
 	char id[265];
 	char phone_number[11];
 	Date date;
@@ -40,7 +40,6 @@ Customer *compare_phone_number(Customer *c1, Customer *c2);
 
 int validate_id(Customer *customer, Customer *compare);
 
-void p_cust(Customer *cust);
-
 char *clean(char *str);
+
 #endif
