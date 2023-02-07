@@ -29,7 +29,7 @@ In order to compile and run this program there are several options:
      To run sever type './remote <port> <database>' and to run client, type './client <port>'.
   
   ```mermaid
-graph Flow;
+graph TD;
   Query-->Set-->Send to Server-->Fill_Attributes-->Save to List-->Write to database
   Query-->Select-->Send to Server-->Select from List-->Send to Client
   Query-->Print-->Send to Server-->Get List-->Send to Client
