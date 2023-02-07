@@ -19,4 +19,18 @@ There are four legitimate commands:
 4. quit. - This command quits the program.
 
 
-This app is compiled with a Makefile using the command 'make', and is run by typing in './local'.
+In order to compile and run this program there are several options:
+  
+  1. To run locally, compile with 'make local' and run with ./local.
+
+  2. To run in client-sever mode, compile the server with 'make remote' and the client side with 'gcc client.c -o client'.
+     To run sever type './remote <port> <database>' and to run client, type './client <port>'.
+  
+  ```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+  
