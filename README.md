@@ -30,10 +30,10 @@ In order to compile and run this program there are several options:
   
   ```mermaid
 graph TD;
-  Query-->Set-->Send to Server-->Fill_Attributes-->Save to List-->Write to database
-  Query-->Select-->Send to Server-->Select from List-->Send to Client
-  Query-->Print-->Send to Server-->Get List-->Send to Client
-  Query-->Send-->Send to Server
-  Query-->Quit-->Leave Program
-  Query-->'Enter'-->Send to Server
+  Query-->Set-->Send_to_Server-->Fill_Attributes-->Save_to_List-->Write_to_database
+  Query-->Select-->Send_to_Server-->Select_from_List-->Send_to_Client
+  Query-->Print-->Send_to_Server-->Get_List-->Send_to_Client
+  Query-->Send-->Send_to_Server
+  Query-->Quit-->Leave_Program
+  Query-->'Enter'-->Send_to_Server
 ```
