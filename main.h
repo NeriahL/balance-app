@@ -7,8 +7,8 @@
 #include <time.h>
 #include <stdio.h>
 
-void output_error(char *str);
+void output_error(char *str, int socket);
 
-char *p_cust(Customer *cust);
+char *p_cust(Customer *cust, int socket);
 
 #endif

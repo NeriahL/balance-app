@@ -5,12 +5,7 @@
 #include "helper_functions.h"
 #include "generate_list.h"
 
-void output_error(char *str)
-{
-	printf("%s", str);
-}
-
-char *p_cust(Customer *cust)
+char *p_cust(Customer *cust, int socket)
 {
 	/*Prints All Fields In Customer*/
 	char output[400];
@@ -29,56 +24,38 @@ char *p_cust(Customer *cust)
 	return op;
 }
 
-int main()
+void output_error(char *str, int socket) 
 {
-	FILE *ptr = fopen("database.csv", "r");
+	printf("%s\n", str);
+}
+
+int main(int argc, char **argv)
+{
+	if (argc < 2)
+    {
+        printf("Usage: %s <database>\n", argv[0]);
+        return 1;
+    }
+
 	Customer *head = NULL;
-	char *command;
-	char *str;
-	char *val;
 	char buf[265];
+	char *database = argv[1];
+	FILE *ptr = fopen(database, "r");
 
-	fgets(buf, 265, ptr);
-
-	//Prints customers in database.
-	while (fgets(buf, 265, ptr)) 
-	{
-		generate_node(&head, buf, NULL, ptr);
-	}
-	Print(head, NULL, "*", compare_debt);
-	
-	//runs program until 'quit' is entered
+	home_screen(ptr, &head, buf, NULL, p_cust, output_error);
 	printf("\n<-");
 	fgets(buf, 265, stdin);
-	
+
 	while (strcmp(buf, "quit\n") != 0)
 	{
-		command = strtok_r(buf, " ", &val);
-
-		if (strcmp(command, "set") == 0 || strcmp(command, "select") == 0)
-		{
-			generate_node(&head, val, command, ptr);
-		}
-		else if (strcmp(command, "print\n") == 0)
-		{
-			Print(head, NULL, "*", compare_id);
-		}
-		else if (strcmp(command, "quit\n") == 0)
-		{
-			break;
-		}
-		else
-		{
-			printf("Error: Unknown command, please enter <set>, <select>, <print> or <quit> in their proper format.");
-		}
-		
+		program(ptr, head, buf, NULL, p_cust, output_error);
 		printf("\n<-");
 		fgets(buf, 265, stdin);
 	}
-	
 	Free_All(&head);
-
 	fclose(ptr);
-	
+
+	program(ptr, head, buf, NULL, p_cust, output_error);
+
 	return 0;
 }
