@@ -18,6 +18,8 @@ There are four legitimate commands:
 
 4. quit. - This command quits the program.
 
+5. send. - This command sends queries to server.
+
 
 In order to compile and run this program there are several options:
   
@@ -27,10 +29,11 @@ In order to compile and run this program there are several options:
      To run sever type './remote <port> <database>' and to run client, type './client <port>'.
   
   ```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+graph Flow;
+  Query-->Set-->Send to Server-->Fill_Attributes-->Save to List-->Write to database
+  Query-->Select-->Send to Server-->Select from List-->Send to Client
+  Query-->Print-->Send to Server-->Get List-->Send to Client
+  Query-->Send-->Send to Server
+  Query-->Quit-->Leave Program
+  Query-->'Enter'-->Send to Server
 ```
-  
