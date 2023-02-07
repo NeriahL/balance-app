@@ -7,18 +7,26 @@
 #include <time.h>
 #include "helper_functions.h"
 
-void Insert(Customer **head, Customer *customer);
+void Screen(Customer *head, Customer *pivot, char *comp, COMPARE(customer, pivot), int socket, PRINT_CUST(cust, socket));
 
-void Delete(Customer **head, Customer **customer);
+char *find_op(char *buf);
 
-void Free_All(Customer **head);
+void Fill_Attributes(Customer *head, char *param, char *val, Customer **fill, int socket, PRINT_MSG(str, socket));
 
-void Print(Customer *head, Customer *pivot, char *comp, Customer *(comp_function)(Customer *customer, Customer *pivot));
+void search(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket));
 
-void Run_Attributes(Customer *head, char *command, char *param, char *val, char *op, Customer **fill);
+void set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket));
+
+void home_screen(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(cust, socket));
 
 void write_to_database(FILE *ptr, Customer *customer);
 
-void generate_node(Customer **head, char *buf, char *command, FILE *ptr);
+void Insert(Customer **head, Customer *customer);
+
+void Delete(FILE *ptr, Customer **head, Customer **customer, int socket, PRINT_MSG(str, socket));
+
+void Free_All(Customer **head);
+
+void program(FILE *ptr, Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket));
 
 #endif

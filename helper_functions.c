@@ -1,4 +1,19 @@
 #include "helper_functions.h"
+#include "generate_list.h"
+
+char *lowercase(char *name)
+{
+	char str[strlen(name)];
+	strcpy(str, name);
+	int i = 0;
+	while (str[i] != '\0')
+	{
+		str[i] = tolower(str[i]);
+		i++;
+	}
+	char *point = str;
+	return point;
+}
 
 Customer *compare_date(Customer *c1, Customer *c2)
 {
@@ -48,25 +63,13 @@ Customer *compare_first_name(Customer *c1, Customer *c2)
 		c2: Customer.
 		
 		return: the Customer with the greater valued first name.*/
-	int i = 0;
 
 	char c1_first[strlen(c1->first_name)];
-	strcpy(c1_first, c1->first_name);
-	char c2_first[strlen(c2->first_name)];
-	strcpy(c2_first, c2->first_name);
+	strcpy(c1_first, lowercase(c1->first_name));
 
-	while (c1_first[i] != '\0')
-	{
-		c1_first[i] = tolower(c1_first[i]);
-		i++;
-	}
-	
-	i = 0;
-	while (c2_first[i] != '\0')
-	{
-		c2_first[i] = tolower(c2_first[i]);
-		i++;
-	}
+	char c2_first[strlen(c2->first_name)];
+	strcpy(c2_first, lowercase(c2->first_name));
+
     Customer *r_cust;
 
     if (strcmp(c1_first, c2_first) > 0)
@@ -86,23 +89,11 @@ Customer *compare_last_name(Customer *c1, Customer *c2)
 		return: the Customer with the greater valued last name.*/
 
 	char c1_last[strlen(c1->last_name)];
-	strcpy(c1_last, c1->last_name);
-	char c2_last[strlen(c2->last_name)];
-	strcpy(c2_last, c2->last_name);
-
-	int i = 0;
-	while (c1_last[i] != '\0')
-	{
-		c1_last[i] = tolower(c1_last[i]);
-		i++;
-	}
+	strcpy(c1_last, lowercase(c1->last_name));
 	
-	i = 0;
-	while (c2_last[i] != '\0')
-	{
-		c2_last[i] = tolower(c2_last[i]);
-		i++;
-	}
+	char c2_last[strlen(c2->last_name)];
+	strcpy(c2_last, lowercase(c2->last_name));
+
     
 	Customer *r_cust;
 
@@ -147,7 +138,7 @@ Customer *compare_phone_number(Customer *c1, Customer *c2)
     return r_cust;
 }
 
-int validate_id(Customer *customer, Customer *compare)
+int validate_id(Customer *customer, Customer *compare, int socket, PRINT_MSG(str, socket))
 {
 	/*Function validates if ID is already present in the system
 	
@@ -157,12 +148,26 @@ int validate_id(Customer *customer, Customer *compare)
 	return: Function returns 1 if first and last names are not equal between two Customers.
 	
 	used to validate ID*/
+
 	if (compare != NULL)
 	{
-		if(strcmp(compare->first_name, customer->first_name) != 0 ||
-		   strcmp(compare->last_name, customer->last_name) != 0)
+		char *out = "Error: Name of customer does not match name paired to ID in system.\nPlease enter correct name and/or ID number\n";
+		char cust_first[12];
+		char cust_last[12];
+		char comp_first[12];
+		char comp_last[12];
+
+		strcpy(cust_first, lowercase(customer->first_name));
+		strcpy(cust_last, lowercase(customer->last_name));
+		strcpy(comp_first, lowercase(compare->first_name));
+		strcpy(comp_last, lowercase(compare->last_name));
+
+		if(strcmp(cust_first, comp_first) != 0 || strcmp(cust_last, comp_last) != 0)
 		{
-			printf("Error: Name of customer does not match name paired to ID in system.\nPlease enter correct name and/or ID number\n");
+			if (socket != 0)
+			{
+				print_msg(out, socket);
+			}
 			return 1;
 		}
 	}
@@ -177,13 +182,13 @@ char *clean(char *str)
 	if (str == NULL)
 		return NULL;
 	
-	while (*str == ' ') //moves beginning of string to after the leading whitespace
+	while (*str == ' ' | *str == '\t' || *str == '\0' || *str == '\n') //moves beginning of string to after the leading whitespace
 		str++;
 
 	int i = strlen(str)-1;
 	char new_arr[100];
 
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\0') //marks 'i' as end of new string and decreses its value until beginning of trailing whitespace
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\0' || str[i] == '\n') //marks 'i' as end of new string and decreses its value until beginning of trailing whitespace
 		i--;
 	
 	strncpy(new_arr, str, i+1); //copies clean string to newly allocated memory.
@@ -191,4 +196,37 @@ char *clean(char *str)
 	str = new_arr; //points pointer at new string.
 
 	return str;
+}
+
+int id_length(Customer *customer, int socket, PRINT_MSG(str, socket))
+{
+	char out[400];
+	if (strlen(customer->id) != 9 || atoi(customer->id) == 0) // validate ID as being 9 digits and numerical. if non-valid, free *fill.
+	{
+		sprintf(out ,"Customer %s %s has been entered with incorrect ID %s\n",
+				customer->first_name,
+				customer->last_name,
+				customer->id);
+		print_msg(out, socket);
+		
+		return 0;
+	}
+	return 1;
+}
+
+int validate_date(Customer *customer, int socket, PRINT_MSG(str, socket))
+{
+	char out[400];
+
+	if ((customer->date.day > 31 || customer->date.day < 1) || 
+					(customer->date.month > 12 || customer->date.month <1) || 
+					(customer->date.year > 2023))								// validate that date is legal, if non-valid, free *fill.
+	{
+		sprintf(out, "Customer %s %s has been entered with incorrect date\n",
+				customer->first_name,
+				customer->last_name);
+		print_msg(out, socket);
+		return 0;
+	}
+	return 1;
 }
