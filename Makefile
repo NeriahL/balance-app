@@ -1,6 +1,9 @@
 remote: generate_list.o server.o helper_functions.o
 	gcc -g generate_list.o server.o helper_functions.o -o remote
 
+local: generate_list.o main.o helper_functions.o
+	gcc -g generate_list.o main.o helper_functions.o -o local
+
 server.o: server.c
 	gcc -g -c server.c
 
