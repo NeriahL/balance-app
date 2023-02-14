@@ -49,12 +49,16 @@ int main(int argc, char **argv)
         {
             fgets(buffer[i], MAX_LEN, stdin);
 
-            if(strcmp(buffer[i], "send\n") == 0 || strcmp(buffer[i], "\n") == 0)
+            if(strcmp(buffer[i], "send\n") == 0)
+                break;
+                //get out of current loop
+                
+            if (strcmp(buffer[i], "\n") == 0)
             {
                 strcpy(buffer[i], "send\n");
                 break;
-                //get out of current loop
             }
+            
 
             if (strcmp(buffer[i], "quit\n") == 0)
                 break;
