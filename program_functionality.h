@@ -6,15 +6,17 @@
 #include <string.h>
 #include <time.h>
 #include "helper_functions.h"
+#include "validations.h"
+#include "generate_list.h"
 
-void program(FILE *ptr, Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket));
+void handle_options(FILE *ptr, Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket));
 
-void Fill_Attributes(Customer *head, char *param, char *val, Customer **fill, int socket, PRINT_MSG(str, socket));
+void populate_customer(Customer *head, char *param, char *val, Customer *customer, int socket, PRINT_MSG(str, socket));
 
-void search(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket));
+void handlie_select(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket));
 
-void set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket));
+void handle_set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket));
 
-void home_screen(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(cust, socket));
+void list_init(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(cust, socket));
 
 #endif

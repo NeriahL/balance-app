@@ -1,11 +1,11 @@
 #include "program_functionality.h"
 
-void Fill_Attributes(Customer *head, char *param, char *val, Customer **fill, int socket, PRINT_MSG(str, socket))
+void populate_customer(Customer *head, char *param, char *val, Customer *customer, int socket, PRINT_MSG(str, socket))
 {
 	/*Function Runs Through Attributes of Customer, Validated them, Populates them and treates them according to the value of 'command'
 	
 	head: Customer. head of List.
-	fill: &Customer. Customer to fill.
+	customer: &Customer. Customer to fill.
 	command: char*. command entered in query.
 	param: char*. parameter in query.
 	val: char*. value entered in query.
@@ -17,46 +17,46 @@ void Fill_Attributes(Customer *head, char *param, char *val, Customer **fill, in
 	val = lowercase(val);
 	val[0] = toupper(val[0]);
 
-	if (strcmp(param, "first name") == 0) // if param is first name, populate (*fill)->first_name.
-		strcpy((*fill)->first_name, val);
+	if (strcmp(param, "first name") == 0) // if param is first name, populate customer->first_name.
+		strcpy(customer->first_name, val);
 		
-	else if (strcmp(param, "last name") == 0 || strcmp(param, "second name") == 0) // if param is last name or second name, populate (*fill)->last_name.
-		strcpy((*fill)->last_name, val);
+	else if (strcmp(param, "last name") == 0 || strcmp(param, "second name") == 0) // if param is last name or second name, populate customer->last_name.
+		strcpy(customer->last_name, val);
 
-	else if (strcmp(param, "id") == 0) // if param is last name or second name, populate (*fill)->id.
+	else if (strcmp(param, "id") == 0) // if param is last name or second name, populate customer->id.
 	{
-		strcpy((*fill)->id, val);
-		if (id_length(*fill, socket, print_msg) == 0)
+		strcpy(customer->id, val);
+		if (id_is_valid(customer, socket, print_msg) == 0)
 		{
-			free(*fill);
-			*fill = NULL;
+			free(customer);
+			customer = NULL;
 		}	
 	}
-	else if (strcmp(param, "phone number") == 0 || strcmp(param, "phone") == 0) // if param is phone number or phone, populate (*fill)->phone_number.
-		strcpy((*fill)->phone_number, val);
+	else if (strcmp(param, "phone number") == 0 || strcmp(param, "phone") == 0) // if param is phone number or phone, populate customer->phone_number.
+		strcpy(customer->phone_number, val);
 
-	else if (strcmp(param, "date") == 0) // if param is date, populate (*fill)->date.
+	else if (strcmp(param, "date") == 0) // if param is date, populate customer->date.
 	{
-		sscanf(val, "%d/%d/%d", &((*fill)->date.month), &((*fill)->date.day), &((*fill)->date.year));	
-		if (validate_date(*fill, socket, print_msg) == 0)
+		sscanf(val, "%d/%d/%d", &(customer->date.month), &(customer->date.day), &(customer->date.year));	
+		if (validate_date(customer, socket, print_msg) == 0)
 		{
-			free(*fill);
-			*fill = NULL;
+			free(customer);
+			customer = NULL;
 		}
 		
 	}
-	else if (strcmp(param, "debt") == 0) // if param is debt, populate (*fill)->debt.
-		(*fill)->debt = atoi(val);
+	else if (strcmp(param, "debt") == 0) // if param is debt, populate customer->debt.
+		customer->debt = atoi(val);
 	else
 	{
         sprintf(out, "Error: %s is an unknow parameter. Please enter the parameters correctly and in their correct format so as to avoid errors.\n", param);
         PRINT_MSG(out, socket);
-		free(*fill);
-		*fill = NULL;
+		free(customer);
+		customer = NULL;
 	}
 }
 
-void set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket))
+void handle_set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket))
 {
 	char op[3] = {0};
 	char *param;
@@ -68,7 +68,7 @@ void set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket))
 	char *cleaned_val = NULL;
 	FILE *ptr = fopen("database.csv", "r");
 
-	Customer *fill = calloc(1, sizeof(Customer));
+	Customer *customer = calloc(1, sizeof(Customer));
 
 	strcpy(op, find_op(buf));
 
@@ -87,22 +87,24 @@ void set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket))
 			strcpy(cleaned2, clean(str));
 			cleaned_val = cleaned2;
 		}
-		Fill_Attributes(head, cleaned_param, cleaned_val, &fill, socket, print_msg);
+		populate_customer(head, cleaned_param, cleaned_val, customer, socket, print_msg);
 		
-		if (fill == NULL)
+		if (customer == NULL)
 			break;	
 
 		param = strtok(NULL, op);
 		str = strtok(NULL, ",");
 	}
-	//write_to_database(ptr, fill); //write to Database
+	//write_to_database(ptr, customer); //write to Database
 	//output_error("Added debt listing\n");
-	Delete(ptr, &head, &fill, socket, print_msg); //deletes node if current node is same customer.
-	Insert(&head, fill);	//insert new node.
+	int found = delete(ptr, &head, customer, socket, print_msg); //deletes node if current node is same customer.
+
+	if(!found)
+		insert(&head, customer);	//insert new node.
 	
 }
 
-void search(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket))
+void handle_select(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket))
 {
 	char op[3] = {0};
 	char *param;
@@ -137,29 +139,29 @@ void search(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRI
 		cleaned_val = cleaned2;
 	}
 	
-	Customer *fill = calloc(1, sizeof(Customer));
-	Fill_Attributes(head, cleaned_param, cleaned_val, &fill, socket, print_msg);
+	Customer *temp_customer = calloc(1, sizeof(Customer));
+	populate_customer(head, cleaned_param, cleaned_val, temp_customer, socket, print_msg);
 
-	if (fill == NULL)
+	if (temp_customer == NULL)
 		return;
-	else if (fill->first_name[0] != '\0')
-		Screen(head, fill, op, compare_first_name, socket, print_cust);
-	else if (fill->last_name[0] != '\0')
-		Screen(head, fill, op, compare_last_name, socket, print_cust);
-	else if (fill->id[0] != '\0')
-		Screen(head, fill, op, compare_id, socket, print_cust);
-	else if (fill->phone_number[0] != '\0')
-		Screen(head, fill, op, compare_phone_number, socket, print_cust);
-	else if (fill->date.year > 0)
-		Screen(head, fill, op, compare_date, socket, print_cust);
-	else 
-		Screen(head, fill, op, compare_debt, socket, print_cust);
+	else if (strcmp(cleaned_param, "first name") == 0)
+		print_search_results(head, temp_customer, op, compare_first_name, socket, print_cust);
+	else if (strcmp(cleaned_param, "last name") == 0 || strcmp(cleaned_param, "second name") == 0)
+		print_search_results(head, temp_customer, op, compare_last_name, socket, print_cust);
+	else if (strcmp(cleaned_param, "id") == 0)
+		print_search_results(head, temp_customer, op, compare_id, socket, print_cust);
+	else if (strcmp(cleaned_param, "phone number") == 0 || strcmp(cleaned_param, "phone") == 0)
+		print_search_results(head, temp_customer, op, compare_phone_number, socket, print_cust);
+	else if (strcmp(cleaned_param, "date") == 0)
+		print_search_results(head, temp_customer, op, compare_date, socket, print_cust);
+	else if(strcmp(cleaned_param, "debt") == 0)
+		print_search_results(head, temp_customer, op, compare_debt, socket, print_cust);
 	
-	free(fill);
-	fill = NULL;
+	free(temp_customer);
+	temp_customer = NULL;
 }
 
-void home_screen(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket) ,PRINT_MSG(cust, socket))
+void list_init(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket) ,PRINT_MSG(cust, socket))
 {
 	fgets(buf, 265, ptr);
 
@@ -177,16 +179,17 @@ void home_screen(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(c
 		&customer->date.year,
 		&customer->debt);
 
-		Delete(ptr, head, &customer, socket, print_msg);
-		Insert(head, customer);
+		int found = delete(ptr, head, customer, socket, print_msg);
+		if (!found)
+			insert(head, customer);
 	}
 	if (print_cust == NULL)
 	{
-		Screen(*head, NULL, "*", compare_debt, socket, print_cust);
+		print_search_results(*head, NULL, "*", compare_debt, socket, print_cust);
 	}
 }
 
-void program(FILE *ptr, Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket))
+void handle_options(FILE *ptr, Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket))
 {
 	char *command;
 	char op[3] = {0};
@@ -196,11 +199,11 @@ void program(FILE *ptr, Customer *head, char *buf, int socket, PRINT_CUST(cust, 
 	command = clean(command);
 	
 	if (strcmp(command, "set") == 0)
-		set(head, buffer, socket, print_msg);
+		handle_set(head, buffer, socket, print_msg);
 	else if (strcmp(command, "select") == 0)
-		search(head, buffer, socket, print_cust, print_msg);
+		handle_select(head, buffer, socket, print_cust, print_msg);
 	else if (strcmp(command, "print") == 0)
-		Screen(head, NULL, "*", compare_debt, socket, print_cust);
+		print_search_results(head, NULL, "*", compare_debt, socket, print_cust);
 	else if (strcmp(command, "quit") == 0)
 		return;
 	else 

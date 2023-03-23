@@ -123,3 +123,4 @@ Customer *compare_phone_number(Customer *c1, Customer *c2)
     
     return r_cust;
 }
+ 

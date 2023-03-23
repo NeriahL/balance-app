@@ -3,9 +3,9 @@
 
 #include "helper_functions.h"
 
-int validate_id(Customer *customer, Customer *compare, int socket, PRINT_MSG(str, socket));
+int same_id_different_name(Customer *customer, Customer *compare, int socket, PRINT_MSG(str, socket));
 
-int id_length(Customer *customer, int socket, PRINT_MSG(str, socket));
+int id_is_valid(Customer *customer, int socket, PRINT_MSG(str, socket));
 
 int validate_date(Customer *customer, int socket, PRINT_MSG(str, socket));
 

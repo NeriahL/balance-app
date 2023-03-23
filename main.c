@@ -4,6 +4,7 @@
 #include <time.h>
 #include "helper_functions.h"
 #include "generate_list.h"
+#include "program_functionality.h"
 
 char *p_cust(Customer *cust, int socket)
 {
@@ -42,20 +43,20 @@ int main(int argc, char **argv)
 	char *database = argv[1];
 	FILE *ptr = fopen(database, "r");
 
-	home_screen(ptr, &head, buf, NULL, p_cust, output_error);
+	list_init(ptr, &head, buf, NULL, p_cust, output_error);
 	printf("\n<-");
 	fgets(buf, 265, stdin);
 
 	while (strcmp(buf, "quit\n") != 0)
 	{
-		program(ptr, head, buf, NULL, p_cust, output_error);
+		handle_options(ptr, head, buf, NULL, p_cust, output_error);
 		printf("\n<-");
 		fgets(buf, 265, stdin);
 	}
-	Free_All(&head);
+	free_list(&head);
 	fclose(ptr);
 
-	program(ptr, head, buf, NULL, p_cust, output_error);
+	handle_options(ptr, head, buf, NULL, p_cust, output_error);
 
 	return 0;
 }

@@ -1,7 +1,6 @@
 #include "generate_list.h"
 #include "main.h"
 
-
 void write_to_database(FILE *ptr, Customer *customer)
 {
 	/*Writes to Database
@@ -29,9 +28,9 @@ void write_to_database(FILE *ptr, Customer *customer)
 	fopen("database.csv", "r");
 }
 
-void Insert(Customer **head, Customer *customer)
+void insert(Customer **head, Customer *customer)
 {
-	/*Function Inserts Node Into Linked List
+	/*Function inserts Node Into Linked List
 	
 	head: &Customer.
 	customer: Customer.*/
@@ -67,78 +66,75 @@ void Insert(Customer **head, Customer *customer)
 	return;
 }
 
-void Delete(FILE *ptr, Customer **head, Customer **customer, int socket, PRINT_MSG(str, socket))
+int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG(str, socket))
 {
 	/*Function Removes Customer From Linked List
 	
 	head: &Customer.
 	customer: &Customer.*/
 
-	if (*head == NULL || *customer == NULL)
-		return;
+	if (*head == NULL || customer == NULL)
+		return 0;
 	
 	Customer *run = (*head)->next;
 	Customer *trail = *head;
 
-	if (strcmp((*head)->id, (*customer)->id) == 0) //checks if ID already exists in the system
+	if (strcmp((*head)->id, customer->id) == 0) //checks if ID already exists in the system
 	{	
 		puts((*head)->id);
-		if (validate_id(*customer, *head, socket, print_msg) == 1) //checks if names of customer and head are different.
+		if (same_id_different_name(customer, *head, socket, print_msg) == 1) //checks if names of customer and head are different.
 		{
-			
-			free(*customer); //frees customer, as ID is in the system under different name
-			*customer = NULL;
-			return;
+			free(customer); //frees customer, as ID is in the system under different name
+			return 1;
 		}
-		if (compare_date(*head, *customer) == *head)
+		if (compare_date(*head, customer) == *head)
 		{
-			(*customer)->date.day = (*head)->date.day;
-			(*customer)->date.month = (*head)->date.month;
-			(*customer)->date.year = (*head)->date.year;
+			customer->date.day = (*head)->date.day;
+			customer->date.month = (*head)->date.month;
+			customer->date.year = (*head)->date.year;
 		}
 		
 		//Removes node
 
 		Customer *temp = trail;
-		(*customer)->debt += trail->debt;
+		customer->debt += trail->debt;
 		*head = trail->next;
 		free(temp);
 	}
 
 	while (run != NULL)
 	{
-		if (strcmp(run->id, (*customer)->id) == 0) //checks if ID already exists in the system
+		if (strcmp(run->id, customer->id) == 0) //checks if ID already exists in the system
 		{
-			if (validate_id(*customer, run, socket, print_msg) == 1) //checks if names of customer and head are different.
+			if (same_id_different_name(customer, run, socket, print_msg) == 1) //checks if names of customer and head are different.
 			{
-				free(*customer); //frees customer, as ID is in the system under different name
-				*customer = NULL;
-				return;
+				free(customer); //frees customer, as ID is in the system under different name
+				return 1;
 			}
-			if (compare_date(run, *customer) == run)
+			if (compare_date(run, customer) == run)
 			{
-				(*customer)->date.day = run->date.day;
-				(*customer)->date.month = run->date.month;
-				(*customer)->date.year = run->date.year;
+				customer->date.day = run->date.day;
+				customer->date.month = run->date.month;
+				customer->date.year = run->date.year;
 			}
 
 			if (socket > 0)
-				write_to_database(ptr, *customer);
+				write_to_database(ptr, customer);
 			
-
 			//Removes node
 			
 			Customer *temp = run;
-			(*customer)->debt += run->debt;
+			customer->debt += run->debt;
 			trail->next = run->next;
 			free(temp);
 		}
 		trail = trail->next;
 		run = run->next;
 	}
+	return 0;
 }
 
-void Screen(Customer *head, Customer *pivot, char *comp, COMPARE(customer, pivot), int socket, PRINT_CUST(cust, socket))
+void print_search_results(Customer *head, Customer *pivot, char *comp, COMPARE(customer, pivot), int socket, PRINT_CUST(cust, socket))
 {
 	/*Function Prints List in accordance with Query
 	
@@ -158,24 +154,24 @@ void Screen(Customer *head, Customer *pivot, char *comp, COMPARE(customer, pivot
 	{
 		if (strcmp(comp, "*") == 0 || comp_function(pivot, run) == pivot)
 		{
-			if (strcmp(comp, "!=") == 0 || strcmp(comp, ">") == 0 || strcmp(comp, "*") == 0) // print the following if node is unequal to or greater than pivot value. Or print function was called in general.
+			if (strcmp(comp, "!=") == 0 || strcmp(comp, ">") == 0 || strcmp(comp, "*") == 0) // print the following if run is unequal to or greater than pivot value. Or print function was called in general.
 				print_cust(run, socket);
 		} 
 		else if (strcmp(comp, "*") == 0 || comp_function(run, pivot) == run) 
 		{
-			if (strcmp(comp, "!=") == 0 || strcmp(comp, "<") == 0 || strcmp(comp, "*") == 0) // print the following if node is unequal to or lesser than pivot value. Or print function was called in general.
+			if (strcmp(comp, "!=") == 0 || strcmp(comp, "<") == 0 || strcmp(comp, "*") == 0) // print the following if run is unequal to or lesser than pivot value. Or print function was called in general.
 				print_cust(run, socket);
 		}
 		else 
 		{
-			if (strcmp(comp, "=") == 0 || strcmp(comp, "*") == 0) // print the following if node is equal to the pivot value. Or print function was called in general.
+			if (strcmp(comp, "=") == 0 || strcmp(comp, "*") == 0) // print the following if run is equal to the pivot value. Or print function was called in general.
 				print_cust(run, socket);
 		}
 		run = run->next;
 	}
 }
 
-void Free_All(Customer **head)
+void free_list(Customer **head)
 {
 	/*Function Frees Entire List*/
 

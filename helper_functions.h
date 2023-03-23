@@ -23,7 +23,7 @@ typedef struct Customer
 {
 	char first_name[12];
 	char last_name[12];
-	char id[265];
+	char id[10];
 	char phone_number[11];
 	Date date;
 	int debt;

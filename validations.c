@@ -1,6 +1,6 @@
 #include "validations.h"
 
-int validate_id(Customer *customer, Customer *compare, int socket, PRINT_MSG(str, socket))
+int same_id_different_name(Customer *customer, Customer *compare, int socket, PRINT_MSG(str, socket))
 {
 	/*Function validates if ID is already present in the system
 	
@@ -36,10 +36,10 @@ int validate_id(Customer *customer, Customer *compare, int socket, PRINT_MSG(str
 	return 0;
 }
 
-int id_length(Customer *customer, int socket, PRINT_MSG(str, socket))
+int id_is_valid(Customer *customer, int socket, PRINT_MSG(str, socket))
 {
 	char out[400];
-	if (strlen(customer->id) != 9 || atoi(customer->id) == 0) // validate ID as being 9 digits and numerical. if non-valid, free *fill.
+	if (strlen(customer->id) != 9 || atoi(customer->id) == 0) // validate ID as being 9 digits and numerical.
 	{
 		sprintf(out ,"Customer %s %s has been entered with incorrect ID %s\n",
 				customer->first_name,
