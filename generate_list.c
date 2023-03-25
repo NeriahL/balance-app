@@ -34,11 +34,6 @@ void insert(Customer **head, Customer *customer)
 	
 	head: &Customer.
 	customer: Customer.*/
-	if (customer == NULL)
-	{
-		return;
-	}
-	
 	if (*head == NULL)
 	{
 		*head = customer;
@@ -81,8 +76,7 @@ int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG
 
 	if (strcmp((*head)->id, customer->id) == 0) //checks if ID already exists in the system
 	{	
-		puts((*head)->id);
-		if (same_id_different_name(customer, *head, socket, print_msg) == 1) //checks if names of customer and head are different.
+		if (print_validation_msg(customer, *head, socket, print_msg) == 1) //checks if names of customer and head are different.
 		{
 			free(customer); //frees customer, as ID is in the system under different name
 			return 1;
@@ -95,7 +89,6 @@ int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG
 		}
 		
 		//Removes node
-
 		Customer *temp = trail;
 		customer->debt += trail->debt;
 		*head = trail->next;
@@ -106,7 +99,7 @@ int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG
 	{
 		if (strcmp(run->id, customer->id) == 0) //checks if ID already exists in the system
 		{
-			if (same_id_different_name(customer, run, socket, print_msg) == 1) //checks if names of customer and head are different.
+			if (print_validation_msg(customer, run, socket, print_msg) == 1) //checks if names of customer and head are different.
 			{
 				free(customer); //frees customer, as ID is in the system under different name
 				return 1;
@@ -122,7 +115,6 @@ int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG
 				write_to_database(ptr, customer);
 			
 			//Removes node
-			
 			Customer *temp = run;
 			customer->debt += run->debt;
 			trail->next = run->next;

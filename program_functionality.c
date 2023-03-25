@@ -17,43 +17,37 @@ void populate_customer(Customer *head, char *param, char *val, Customer *custome
 	val = lowercase(val);
 	val[0] = toupper(val[0]);
 
-	if (strcmp(param, "first name") == 0) // if param is first name, populate customer->first_name.
+	if (strcmp(param, "first name") == 0) // if param is 'first name', populate customer->first_name.
 		strcpy(customer->first_name, val);
 		
-	else if (strcmp(param, "last name") == 0 || strcmp(param, "second name") == 0) // if param is last name or second name, populate customer->last_name.
+	else if (strcmp(param, "last name") == 0 || strcmp(param, "second name") == 0) // if param is 'last name' or 'second name', populate customer->last_name.
 		strcpy(customer->last_name, val);
-
-	else if (strcmp(param, "id") == 0) // if param is last name or second name, populate customer->id.
-	{
-		strcpy(customer->id, val);
-		if (id_is_valid(customer, socket, print_msg) == 0)
-		{
-			free(customer);
-			customer = NULL;
-		}	
-	}
-	else if (strcmp(param, "phone number") == 0 || strcmp(param, "phone") == 0) // if param is phone number or phone, populate customer->phone_number.
+	
+	else if (strcmp(param, "phone number") == 0 || strcmp(param, "phone") == 0) // if param is 'phone number' or 'phone', populate customer->phone_number.
 		strcpy(customer->phone_number, val);
-
-	else if (strcmp(param, "date") == 0) // if param is date, populate customer->date.
-	{
-		sscanf(val, "%d/%d/%d", &(customer->date.month), &(customer->date.day), &(customer->date.year));	
-		if (validate_date(customer, socket, print_msg) == 0)
-		{
-			free(customer);
-			customer = NULL;
-		}
-		
-	}
-	else if (strcmp(param, "debt") == 0) // if param is debt, populate customer->debt.
+	
+	else if (strcmp(param, "debt") == 0) // if param is 'debt', populate customer->debt.
 		customer->debt = atoi(val);
-	else
+
+	else if (strcmp(param, "id") == 0) // if param is 'id', populate customer->id.
+		strcpy(customer->id, val);
+
+	else if (strcmp(param, "date") == 0) // if param is 'date', populate customer->date.
+		sscanf(val, "%d/%d/%d", &(customer->date.month), &(customer->date.day), &(customer->date.year));	
+
+	else if(print_validation_msg(customer, NULL, socket, print_msg) == 1)
 	{
-        sprintf(out, "Error: %s is an unknow parameter. Please enter the parameters correctly and in their correct format so as to avoid errors.\n", param);
-        PRINT_MSG(out, socket);
 		free(customer);
 		customer = NULL;
 	}
+	else
+	{
+        sprintf(out, "Error: %s is an unknow parameter. Please enter the parameters correctly and in their correct format so as to avoid errors.\n", param);
+        print_msg(out, socket);
+		free(customer);
+		customer = NULL;
+	}
+
 }
 
 void handle_set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket))
@@ -101,7 +95,6 @@ void handle_set(Customer *head, char *buf, int socket, PRINT_MSG(str, socket))
 
 	if(!found)
 		insert(&head, customer);	//insert new node.
-	
 }
 
 void handle_select(Customer *head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(str, socket))

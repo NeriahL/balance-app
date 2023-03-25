@@ -9,7 +9,7 @@
 char *p_cust(Customer *cust, int socket)
 {
 	/*Prints All Fields In Customer*/
-	char output[400];
+	char output[400] = {0};
 	char *op = output;
 	sprintf(output, "%s %s %s %s %d/%d/%d %d\n",
         cust->first_name, 
