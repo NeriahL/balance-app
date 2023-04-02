@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include "helper_functions.h"
 #include "generate_list.h"
+#include "handle_commands.h"
 
 #define MAX_LEN 1024
 
@@ -73,7 +74,7 @@ void *conn_handler(void *args)
 
     FILE *ptr = fopen(sock->database, "r");
 
-    program(ptr, head, buffer, sock->new_sock, send_cust, send_error);
+    handle_options(ptr, head, buffer, sock->new_sock, send_cust, send_error);
 
     fclose(ptr);
     exit:
@@ -127,7 +128,7 @@ int main(int argc, char **argv)
     char *output;
     char buf[265];
 
-    home_screen(ptr, &head, buf, 0, send_cust, send_error);
+    list_init(ptr, &head, buf, -1, send_cust, send_error);
 
     if (pthread_mutex_init(&mutex, NULL) != 0) 
     {
@@ -149,7 +150,7 @@ int main(int argc, char **argv)
         pthread_create(&tid, NULL, conn_handler, (void *)sock);
         pthread_join(tid, NULL);
     }
-    Free_All(&head);
+    free_list(&head);
     fclose(ptr);
     pthread_mutex_destroy(&mutex);
 

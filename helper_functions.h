@@ -9,7 +9,7 @@
 #include "string_methods.h"
 
 #define COMPARE(customer, pivot) Customer *(comp_function)(Customer *customer, Customer *pivot)
-#define PRINT_CUST(cust, socket) char *(print_cust)(Customer *cust, int socket)
+#define PRINT_CUST(cust, socket) void (print_cust)(Customer *cust, int socket)
 #define PRINT_MSG(str, socket) void (print_msg)(char str[], int socket)
 
 typedef struct Date

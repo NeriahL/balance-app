@@ -40,29 +40,47 @@ char *clean(char *str)
 
 char *find_op(char *buf)
 {
-	char op[3] = {0};
-	char *oper;
+	char *op;
 
-	if (strstr(buf, "="))
-	{
-		op[0] = '=';
-		op[1] = '\0';
-	}
+	if (strstr(buf, "!="))
+		op = "!=\0";
+		
 	else if (strstr(buf, "<"))
-	{
-		op[0] = '<';
-		op[1] = '\0';
-	}
+		op = "<\0";
+		
 	else if (strstr(buf, ">"))
+		op = ">\0";
+		
+	else if (strstr(buf, "="))
+		op = "=\0";
+		
+	else
+		op = "-\0";
+
+	return op;
+}
+
+char ** parse_query_text(char *buf)
+{
+	char **query = calloc(3, sizeof(char *));
+
+	char cleaned1[100] = {0};
+	char cleaned2[100] = {0};
+
+	query[1] = find_op(buf);
+	query[0] = strtok(buf, query[1]);
+	query[2] = strtok(NULL, query[1]);
+
+	if (query[0] != NULL)
 	{
-		op[0] = '>';
-		op[1] = '\0';
+		strcpy(cleaned1, clean(query[0]));
+		strcpy(query[0], cleaned1);
 	}
-	else if (strstr(buf, "!="))
+	if (query[2] != NULL)
 	{
-		op[0] = '!';
-		op[1] = '=';
+		strcpy(cleaned2, clean(query[2]));
+		strcpy(query[2], cleaned2);
 	}
-	oper = op;
-	return oper;
+
+	return query;
 }

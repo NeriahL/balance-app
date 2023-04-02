@@ -97,13 +97,17 @@ int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG
 
 	while (run != NULL)
 	{
-		if (strcmp(run->id, customer->id) == 0) //checks if ID already exists in the system
+		if (!strcmp(run->id, customer->id)) //checks if ID already exists in the system
 		{
 			if (print_validation_msg(customer, run, socket, print_msg) == 1) //checks if names of customer and head are different.
 			{
 				free(customer); //frees customer, as ID is in the system under different name
 				return 1;
 			}
+			
+			if (socket != -1)
+				write_to_database(ptr, customer);
+			
 			if (compare_date(run, customer) == run)
 			{
 				customer->date.day = run->date.day;
@@ -111,9 +115,6 @@ int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG
 				customer->date.year = run->date.year;
 			}
 
-			if (socket > 0)
-				write_to_database(ptr, customer);
-			
 			//Removes node
 			Customer *temp = run;
 			customer->debt += run->debt;
@@ -175,4 +176,30 @@ void free_list(Customer **head)
 		*head = (*head)->next;
 		free(run);
 	}
+}
+
+void list_init(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket) ,PRINT_MSG(cust, socket))
+{
+	fgets(buf, 265, ptr);
+
+	//Prints customers in database.
+	while (fgets(buf, 265, ptr)) 
+	{
+		Customer *customer = calloc(1, sizeof(Customer));
+		sscanf(buf, "%s , %s , %s , %s , %d/%d/%d , %d",
+		customer->first_name,
+		customer->last_name,
+		customer->id,
+		customer->phone_number,
+		&customer->date.month,
+		&customer->date.day,
+		&customer->date.year,
+		&customer->debt);
+
+		int found = delete(ptr, head, customer, socket, print_msg);
+		if(!found)
+			insert(head, customer);	//insert new node.
+	}
+	if (socket != -1)
+		print_search_results(*head, NULL, "*", compare_debt, socket, print_cust);
 }

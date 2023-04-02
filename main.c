@@ -4,13 +4,13 @@
 #include <time.h>
 #include "helper_functions.h"
 #include "generate_list.h"
-#include "program_functionality.h"
+#include "handle_commands.h"
 
-char *p_cust(Customer *cust, int socket)
+void p_cust(Customer *cust, int socket)
 {
 	/*Prints All Fields In Customer*/
 	char output[400] = {0};
-	char *op = output;
+	//char *op = output;
 	sprintf(output, "%s %s %s %s %d/%d/%d %d\n",
         cust->first_name, 
         cust->last_name,
@@ -22,7 +22,7 @@ char *p_cust(Customer *cust, int socket)
         cust->debt);
 
 	printf("%s", output);
-	return op;
+	return;
 }
 
 void output_error(char *str, int socket) 
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 	char *database = argv[1];
 	FILE *ptr = fopen(database, "r");
 
-	list_init(ptr, &head, buf, NULL, p_cust, output_error);
+	list_init(ptr, &head, buf, -1, p_cust, output_error);
 	printf("\n<-");
 	fgets(buf, 265, stdin);
 
@@ -55,8 +55,6 @@ int main(int argc, char **argv)
 	}
 	free_list(&head);
 	fclose(ptr);
-
-	handle_options(ptr, head, buf, NULL, p_cust, output_error);
 
 	return 0;
 }

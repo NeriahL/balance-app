@@ -13,4 +13,6 @@ char *lowercase(char *name);
 
 char *find_op(char *buf);
 
+char ** parse_query_text(char *buf);
+
 #endif

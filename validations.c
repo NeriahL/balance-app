@@ -76,6 +76,8 @@ int print_validation_msg(Customer *customer, Customer *compare, int socket, PRIN
 		strcpy(out, "Error: Name of customer does not match name paired to ID in system.\nPlease enter correct name and/or ID number\n");
 		r_value = 1;
 	}
+	else
+		return 0;
 	print_msg(out, socket);
 	return r_value;
 }

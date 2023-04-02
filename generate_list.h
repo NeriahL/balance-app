@@ -17,6 +17,8 @@ void insert(Customer **head, Customer *customer);
 
 int delete(FILE *ptr, Customer **head, Customer *customer, int socket, PRINT_MSG(str, socket));
 
+void list_init(FILE *ptr, Customer **head, char *buf, int socket, PRINT_CUST(cust, socket), PRINT_MSG(cust, socket));
+
 void free_list(Customer **head);
 
 #endif
