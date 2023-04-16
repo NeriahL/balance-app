@@ -6,6 +6,8 @@
 #include <string.h>
 #include <time.h>
 #include <stdio.h>
+#include "structures.h"
+#include "helper_functions.h"
 
 void output_error(char *str, int socket);
 

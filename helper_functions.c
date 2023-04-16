@@ -1,126 +1,86 @@
 #include "helper_functions.h"
 #include "generate_list.h"
 
-Customer *compare_date(Customer *c1, Customer *c2)
+int compare_date(Customer *cust, char *date)
 {
-	/*Function Compares dates:
-		c1: Customer.
-		c2: Customer.
-		c1_date: int, calculates number of days in date for c1.
-		c2_date: int, calculates number of days in date for c2.
-		
-		return: the Customer with the greater date.*/
-    Customer *ptr;
-    int c1_date = (c1->date.year *372) + (c1->date.month * 31) + c1->date.day;
-    int c2_date = (c2->date.year *372) + (c2->date.month * 31) + c2->date.day;
+	int day = 0, month = 0, year = 0, string_date = 0, cust_date = 0;
 
-    if (c1_date > c2_date)
-        ptr = c1;
-    else
-        ptr = c2;
+	sscanf(date, "%d/%d/%d", &month, &day, &year);
 
-    return ptr;
+	string_date = (month*31) + (year*372) + day;
+	cust_date = (cust->date.month*31) + (cust->date.year*372) + cust->date.day;
+
+	 if (string_date > cust_date)
+		return GREATER;
+	else if (string_date < cust_date)
+		return LESSER;
+	else if (string_date == cust_date)
+		return EQUAL;
 }
 
-Customer *compare_debt(Customer *c1, Customer *c2)
+int compare_debt(Customer *cust, char *debt)
 {	
-	/*Function Compares debts:
-		c1: Customer.
-		c2: Customer.
-		
-		return: the Customer with the greater debt.*/
-    Customer *r_cust;
-
-    if (!c1 || !c2)
-        return NULL;
-    
-    if (c1->debt < c2->debt)
-        r_cust = c1;
-    else 
-        r_cust = c2;
-    
-    return r_cust;
-}
-
-Customer *compare_first_name(Customer *c1, Customer *c2)
-{
-	/*Function Compares first names:
-		c1: Customer.
-		c2: Customer.
-		
-		return: the Customer with the greater valued first name.*/
-
-	char c1_first[strlen(c1->first_name)];
-	strcpy(c1_first, lowercase(c1->first_name));
-
-	char c2_first[strlen(c2->first_name)];
-	strcpy(c2_first, lowercase(c2->first_name));
-
-    Customer *r_cust;
-
-    if (strcmp(c1_first, c2_first) > 0)
-        r_cust = c1;
-    else 
-        r_cust = c2;
-
-    return r_cust;
-}
-
-Customer *compare_last_name(Customer *c1, Customer *c2)
-{
-	/*Function Compares last names:
-		c1: Customer.
-		c2: Customer.
-		
-		return: the Customer with the greater valued last name.*/
-
-	char c1_last[strlen(c1->last_name)];
-	strcpy(c1_last, lowercase(c1->last_name));
+	int string_debt = 0, cust_debt = 0;
 	
-	char c2_last[strlen(c2->last_name)];
-	strcpy(c2_last, lowercase(c2->last_name));
+	string_debt = atoi(debt);
+	cust_debt = cust->debt;
 
-    
-	Customer *r_cust;
-
-    if (strcmp(c1_last, c2_last) > 0)
-        r_cust = c1;
-    else 
-        r_cust = c2;
-        
-    return r_cust;
+	 if (string_debt > cust_debt)
+		return GREATER;
+	else if (string_debt < cust_debt)
+		return LESSER;
+	else if (string_debt == cust_debt)
+		return EQUAL;
 }
 
-Customer *compare_id(Customer *c1, Customer *c2)
+int compare_first_name(Customer *cust, char *first_name)
 {
-	/*Function Compares ids:
-		c1: Customer.
-		c2: Customer.
-		
-		return: the Customer with the greater valued id.*/
-    Customer *r_cust = NULL;
+	char cust_first[strlen(cust->first_name)];
+	strcpy(cust_first, lowercase(clean(cust->first_name)));
 
-	if (strcmp(c1->id, c2->id) > 0)
-		r_cust = c1;
-	else
-		r_cust = c2;
-    
-	return r_cust;
+	first_name = lowercase(clean(first_name));
+
+	if (strcmp(first_name, cust_first) > 0)
+		return GREATER;
+	else if (strcmp(first_name, cust_first) < 0)
+		return LESSER;
+	else if(!strcmp(first_name, cust_first))
+		return EQUAL;
 }
 
-Customer *compare_phone_number(Customer *c1, Customer *c2)
+int compare_last_name(Customer *cust, char *last_name)
 {
-	/*Function Compares phone numbers:
-		c1: Customer.
-		c2: Customer.
-		
-		return: the Customer with the greater valued phone numbers.*/
-    Customer *r_cust;
-    if (atoi(c1->phone_number)> atoi(c2->phone_number))
-        r_cust = c1;
-    else
-        r_cust = c2;
-    
-    return r_cust;
+	char cust_last[strlen(cust->last_name)];
+	strcpy(cust_last, lowercase(clean(cust->last_name)));
+
+	last_name = lowercase(clean(last_name));
+
+	if (strcmp(last_name, cust_last) > 0)
+		return GREATER;
+	else if (strcmp(last_name, cust_last) < 0)
+		return LESSER;
+	else if(!strcmp(last_name, cust_last))
+		return EQUAL;
+}
+
+int compare_id(Customer *cust, char *id)
+{
+	if (strcmp(id, cust->id) > 0)
+		return GREATER;	 
+	else if (strcmp(id, cust->id) < 0)
+		return LESSER;
+	else if (!strcmp(id, cust->id))
+		return EQUAL;
+	
+}
+
+int compare_phone_number(Customer *cust, char *phone_number)
+{
+	if (strcmp(phone_number, cust->phone_number) > 0)
+		return GREATER;	 
+	else if (strcmp(phone_number, cust->phone_number) < 0)
+		return LESSER;
+	else if (!strcmp(phone_number, cust->phone_number))
+		return EQUAL;
 }
  

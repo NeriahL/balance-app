@@ -51,33 +51,35 @@ int validate_date(Customer *customer)
 	return 1;
 }
 
-int print_validation_msg(Customer *customer, Customer *compare, int socket, PRINT_MSG(str, socket))
+int print_validation_msg(Customer *customer, Customer *compare)
 {
 	char out[400];
 	int r_value = 0;
 
 	if(validate_date(customer) == 0)
 	{
-		sprintf(out, "Customer %s %s has been entered with incorrect date\n",
+		sprintf(out, "Error: Customer %s %s has been entered with incorrect date",
 				customer->first_name,
 				customer->last_name);
 		r_value = 1;
+		collect_errors(out);
 	}
 	if (id_is_valid(customer) == 0)
 	{
-		sprintf(out ,"Customer %s %s has been entered with incorrect ID %s\n",
+		sprintf(out ,"Error: Customer %s %s has been entered with incorrect ID %s",
 				customer->first_name,
 				customer->last_name,
 				customer->id);
 		r_value = 1;
+		collect_errors(out);
 	}
 	if(same_id_different_name(customer, compare) == 1)
 	{
-		strcpy(out, "Error: Name of customer does not match name paired to ID in system.\nPlease enter correct name and/or ID number\n");
+		strcpy(out, "Error: Name of customer does not match name paired to ID in system.Please enter correct name and/or ID number");
 		r_value = 1;
+		collect_errors(out);
 	}
 	else
 		return 0;
-	print_msg(out, socket);
 	return r_value;
 }
