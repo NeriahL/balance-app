@@ -44,42 +44,81 @@ char *find_op(char *buf)
 
 	if (strstr(buf, "!="))
 		op = "!=\0";
-		
+
 	else if (strstr(buf, "<"))
 		op = "<\0";
-		
+
 	else if (strstr(buf, ">"))
 		op = ">\0";
-		
+
 	else if (strstr(buf, "="))
 		op = "=\0";
-		
+
 	else
 		op = "-\0";
 
 	return op;
 }
 
-char ** parse_query_text(char *buf)
+char ** parse_query_text(char *buf, int socket, enum COMMAND command)
 {
 	char **query = calloc(3, sizeof(char *));
-
 	char cleaned1[100] = {0};
 	char cleaned2[100] = {0};
-
+	char out[400] = {0};
+	
 	query[1] = find_op(buf);
-	query[0] = strtok(buf, query[1]);
-	query[2] = strtok(NULL, query[1]);
 
+	if (strcmp(query[1], "=") && command == SET)
+	{
+		/* Print error message - no/bad operator*/
+		strcpy(out, "Error: Operator must be '=' when using SET command.");
+		collect_errors(out);
+		query[0] = NULL;
+		query[2] = NULL;
+		return query;
+	}
+	
+
+	if (strcmp(query[1], "-"))
+	{
+		query[0] = strtok(buf, query[1]);
+		query[2] = strtok(NULL, query[1]);
+	}
+	else
+	{
+		query[0] = NULL;
+		query[2] = NULL;
+		/* Print error message - no/bad operator*/
+		strcpy(out, "Error: Operator must be valid comparison operator.");
+		collect_errors(out);
+		return query;
+	}
+	
 	if (query[0] != NULL)
 	{
 		strcpy(cleaned1, clean(query[0]));
 		strcpy(query[0], cleaned1);
 	}
+	else
+	{
+		/*Print error message - no parameter*/
+		strcpy(out, "Error: No Parameter identified.");
+		collect_errors(out);
+		return query;
+	}
+		
 	if (query[2] != NULL)
 	{
 		strcpy(cleaned2, clean(query[2]));
 		strcpy(query[2], cleaned2);
+	}
+	else
+	{
+		/*Print error message - no value*/
+		strcpy(out, "Error: No Value identified.");
+		collect_errors(out);
+		return query;
 	}
 
 	return query;
