@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "handle_commands.h": "c",
+        "validations.h": "c"
+    }
+}
